@@ -1,49 +1,64 @@
 {
-  "hash": "359060cf",
-  "configHash": "bad280cb",
-  "lockfileHash": "aee2bb84",
-  "browserHash": "c9d6ea0f",
+  "hash": "25c6b2d5",
+  "configHash": "4e4578be",
+  "lockfileHash": "b17781ed",
+  "browserHash": "491904e4",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "ee178d3f",
+      "fileHash": "dbc3eb4f",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "6ed09aad",
+      "fileHash": "9c49985f",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "408367b1",
+      "fileHash": "db1012e2",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "cf70eab0",
+      "fileHash": "fa05a648",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "6d0a135f",
+      "fileHash": "ace37673",
+      "needsInterop": false
+    },
+    "@fortawesome/angular-fontawesome": {
+      "src": "../../../../../../node_modules/@fortawesome/angular-fontawesome/fesm2022/angular-fontawesome.mjs",
+      "file": "@fortawesome_angular-fontawesome.js",
+      "fileHash": "77bf57b2",
+      "needsInterop": false
+    },
+    "@fortawesome/free-solid-svg-icons": {
+      "src": "../../../../../../node_modules/@fortawesome/free-solid-svg-icons/index.mjs",
+      "file": "@fortawesome_free-solid-svg-icons.js",
+      "fileHash": "a030e0f5",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-YUG275CG": {
-      "file": "chunk-YUG275CG.js"
+    "chunk-UTD2IJJ5": {
+      "file": "chunk-UTD2IJJ5.js"
     },
-    "chunk-H5FHZ246": {
-      "file": "chunk-H5FHZ246.js"
+    "chunk-VYAL4EGQ": {
+      "file": "chunk-VYAL4EGQ.js"
     },
-    "chunk-FEKN3U2S": {
-      "file": "chunk-FEKN3U2S.js"
+    "chunk-66SYVF35": {
+      "file": "chunk-66SYVF35.js"
+    },
+    "chunk-WDMUDEB6": {
+      "file": "chunk-WDMUDEB6.js"
     }
   }
 }
