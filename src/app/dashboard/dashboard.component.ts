@@ -1,9 +1,9 @@
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 import { AddpolicyComponent } from '../addpolicy/addpolicy.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEdit, faTrash, faAdd, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faAdd, faSearch, faForward, faBackward, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +16,9 @@ export class DashboardComponent {
   searchQuery: string = '';
   isSearchBarVisible = false;
   isModalOpen = false;
+  isSearchModalOpen = false;
   isEditMode = false;
+  isDashboardBlurred = false; 
   selectedPolicies: any[] = [];
   policyToEdit: any = null;
   newPolicy: any = {};
@@ -27,12 +29,31 @@ export class DashboardComponent {
   faTrash = faTrash;
   faAdd = faAdd;
   faSearch = faSearch;
+  faForward = faForward;
+  faBackward = faBackward;
+  faTimes = faTimes;
 
   policies = [
     { id: 1, name: 'Health Insurance', premium: 1200, coverage: 'Medical' },
     { id: 2, name: 'Car Insurance', premium: 800, coverage: 'Automobile' },
     { id: 3, name: 'Home Insurance', premium: 1500, coverage: 'Property' },
   ];
+
+  toggleSearchModal() {
+    this.isSearchModalOpen = !this.isSearchModalOpen;
+    this.isDashboardBlurred = this.isSearchModalOpen;
+  }
+
+  closeSearchModal() {
+    this.isSearchModalOpen = false;
+    this.isDashboardBlurred = false;
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter' && this.isSearchModalOpen) {
+      this.closeSearchModal();
+    }
+  }
 
   openModal(mode: 'add' | 'edit') {
     this.isModalOpen = true;
@@ -93,7 +114,7 @@ export class DashboardComponent {
   }
 
   onSearch() {
-    this.currentPage = 1; 
+    this.currentPage = 1;
     this.closeSearchBar();
   }
 
