@@ -1,5 +1,5 @@
 <div [class.filter-blur]="isDashboardBlurred && !isSearchModalOpen" class="transition duration-300">
-  <div class="container p-2 bg-inherit dark:text-slate-200">
+  <div class="container p-2 bg-inherit text-white">
     <div
       class="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-white/95 supports-backdrop-blur:bg-white/60 dark:bg-transparent">
       <h1 class="inline-block text-xl sm:text-2xl p-1 font-extrabold text-slate-900 tracking-tight dark:text-slate-200">
@@ -10,23 +10,23 @@
     <div class="flex flex-wrap md:flex-nowrap justify-between items-center mt-3 gap-4 mb-6">
       <div class="relative flex flex-wrap md:w-1/3 gap-2">
         <button (click)="openModal('add')"
-          class="p-2 bg-green-900 hover:bg-green-600 rounded-md flex justify-center items-center text-white">
+          class="p-2 bg-green-900 hover:bg-green-600 rounded-sm flex justify-center items-center text-white">
           <fa-icon [icon]="faAdd" class="text-xl"></fa-icon>
           <span class="hidden sm:inline ml-2">Add</span>
         </button>
         <button (click)="openModal('edit')"
-          class="p-2 bg-blue-900 hover:bg-blue-600 rounded-md flex justify-center items-center text-white">
+          class="p-2 bg-blue-900 hover:bg-blue-600 rounded-sm flex justify-center items-center text-white">
           <fa-icon [icon]="faEdit" class="text-xl"></fa-icon>
           <span class="hidden sm:inline ml-2">Edit</span>
         </button>
         <button (click)="deleteSelectedPolicies()"
-          class="p-2 bg-red-900 hover:bg-red-600 rounded-md flex justify-center items-center text-white">
+          class="p-2 bg-red-900 hover:bg-red-600 rounded-sm flex justify-center items-center text-white">
           <fa-icon [icon]="faTrash" class="text-xl"></fa-icon>
           <span class="hidden sm:inline ml-2">Delete</span>
         </button>
       </div>
       <div>
-        <button class="w-full px-4 py-2 sm:px-3 sm:py-1 bg-gray-600 text-white rounded hover:bg-gray-700 md:w-auto"
+        <button class="w-full px-4 py-2 sm:px-3 sm:py-1 bg-gray-600 text-white rounded-sm hover:bg-gray-700 md:w-auto"
           (click)="toggleSearchModal()">
           <fa-icon [icon]="faSearch"></fa-icon> Search
         </button>
@@ -45,7 +45,7 @@
     <div class="overflow-x-auto">
       <table class="table-auto w-full text-sm border-collapse border border-slate-300 dark:border-slate-700">
         <thead>
-          <tr class="bg-gray-200 dark:bg-gray-800 text-left">
+          <tr class="bg-gray-200 dark:bg-gray-800 text-slate-900 text-left">
             <th class="px-4 py-3 border border-slate-300 dark:border-slate-700 text-sm font-medium">
               <input type="checkbox" (change)="selectAll($event)" />
             </th>
@@ -55,7 +55,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let policy of paginatedPolicies" class="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+          <tr *ngFor="let policy of paginatedPolicies" class="hover:bg-gray-100 hover:text-slate-900 dark:hover:bg-gray-700 cursor-pointer">
             <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">
               <input type="checkbox" [checked]="selectedPolicies.includes(policy)" (change)="toggleSelection(policy)" />
             </td>
