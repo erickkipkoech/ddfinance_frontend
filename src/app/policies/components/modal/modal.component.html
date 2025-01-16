@@ -1,0 +1,69 @@
+<div class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 w-1/2">
+      <h2 class="text-xl font-bold mb-4">{{ policy ? 'Edit' : 'Add' }} Policy</h2>
+      <form>
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">Policy Name</label>
+          <input
+            type="text"
+            [(ngModel)]="newPolicy.policyName"
+            required
+            class="w-full border rounded px-4 py-2"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">Premium Amount</label>
+          <input
+            type="number"
+            [(ngModel)]="newPolicy.premiumAmount"
+            required
+            class="w-full border rounded px-4 py-2"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">Policy Type</label>
+          <input
+            type="text"
+            [(ngModel)]="newPolicy.policyType"
+            required
+            class="w-full border rounded px-4 py-2"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">Start Date</label>
+          <input
+            type="date"
+            [(ngModel)]="newPolicy.startDate"
+            required
+            class="w-full border rounded px-4 py-2"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">End Date</label>
+          <input
+            type="date"
+            [(ngModel)]="newPolicy.endDate"
+            required
+            class="w-full border rounded px-4 py-2"
+          />
+        </div>
+        <div class="flex justify-end gap-4">
+          <button
+            type="button"
+            class="bg-gray-500 text-white px-4 py-2 rounded"
+            (click)="close.emit()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="bg-blue-500 text-white px-4 py-2 rounded"
+            (click)="savePolicy()"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
