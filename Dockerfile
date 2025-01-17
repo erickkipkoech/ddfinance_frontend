@@ -20,7 +20,7 @@ RUN npm run build --prod
 FROM nginx:alpine
 
 # Copy the built app from the previous stage
-COPY --from=build /app/dist/ddfinance_frontend /usr/share/nginx/html
+COPY --from=build /app/dist/angular-dashboard /usr/share/nginx/html
 
 # Expose port 80 for the app
 EXPOSE 80
