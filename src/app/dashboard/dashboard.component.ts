@@ -1,24 +1,39 @@
-import { Component } from '@angular/core';
-import { AddpolicyComponent } from '../addpolicy/addpolicy.component';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEdit, faTrash, faAdd, faSearch, faForward, faBackward, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit } from "@angular/core";
+import { AddpolicyComponent } from "../addpolicy/addpolicy.component";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import {
+  faEdit,
+  faTrash,
+  faAdd,
+  faSearch,
+  faForward,
+  faBackward,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
+import { PolicyService } from "../services/policy.service";
+import { Policy } from "../models/policy.model";
 
 @Component({
-  selector: 'app-dashboard',
+  selector: "app-dashboard",
   standalone: true,
   imports: [AddpolicyComponent, CommonModule, FormsModule, FontAwesomeModule],
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+  templateUrl: "./dashboard.component.html",
+  styleUrls: ["./dashboard.component.css"],
 })
-export class DashboardComponent {
-  searchQuery: string = '';
+export class DashboardComponent implements OnInit {
+  policies: Policy[] = [];
+  searchQuery: string = "";
+  showModal: boolean = false;
+  selectedPolicy: Policy | null = null;
+  selectedPolicyIds: number[] = [];
+
   isSearchBarVisible = false;
   isModalOpen = false;
   isSearchModalOpen = false;
   isEditMode = false;
-  isDashboardBlurred = false; 
+  isDashboardBlurred = false;
   selectedPolicies: any[] = [];
   policyToEdit: any = null;
   newPolicy: any = {};
@@ -33,11 +48,23 @@ export class DashboardComponent {
   faBackward = faBackward;
   faTimes = faTimes;
 
-  policies = [
-    { id: 1, name: 'Health Insurance', premium: 1200, coverage: 'Medical' },
-    { id: 2, name: 'Car Insurance', premium: 800, coverage: 'Automobile' },
-    { id: 3, name: 'Home Insurance', premium: 1500, coverage: 'Property' },
-  ];
+  constructor(private policyService: PolicyService) {}
+
+  ngOnInit() {
+    this.loadPolicies();
+  }
+
+  loadPolicies() {
+    this.policyService.getPolicies().subscribe((response) => {
+      if (response.success) {
+        this.policies = response.data || [];
+      }
+    });
+  }
+
+  // policies = [
+
+  // ];
 
   toggleSearchModal() {
     this.isSearchModalOpen = !this.isSearchModalOpen;
@@ -50,48 +77,49 @@ export class DashboardComponent {
   }
 
   handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter' && this.isSearchModalOpen) {
+    if (event.key === "Enter" && this.isSearchModalOpen) {
       this.closeSearchModal();
     }
   }
 
-  openModal(mode: 'add' | 'edit') {
-    this.isModalOpen = true;
-    this.isEditMode = mode === 'edit';
-    if (this.isEditMode && this.selectedPolicies.length === 1) {
+  openModal(mode: "add" | "edit") {
+    if (mode === "edit") {
+      if (this.selectedPolicies.length !== 1) {
+        alert("Please select exactly one policy to edit.");
+        return;
+      }
       this.policyToEdit = { ...this.selectedPolicies[0] };
     } else {
       this.policyToEdit = null;
     }
+    this.isEditMode = mode === "edit";
+    this.isModalOpen = true;
   }
 
   closeModal() {
     this.isModalOpen = false;
   }
 
-  submitPolicy() {
-    if (this.isEditMode) {
-      this.updatePolicy(this.policyToEdit);
-    } else {
-      this.addPolicy(this.newPolicy);
-    }
-  }
-
   addPolicy(newPolicy: any) {
-    const newId = this.policies.length ? Math.max(...this.policies.map((p) => p.id)) + 1 : 1;
+    const newId = this.policies.length
+      ? Math.max(...this.policies.map((p) => p.policyId)) + 1
+      : 1;
     this.policies.push({ id: newId, ...newPolicy });
+    
     this.closeModal();
   }
 
   updatePolicy(updatedPolicy: any) {
-    const index = this.policies.findIndex((p) => p.id === updatedPolicy.id);
+    const index = this.policies.findIndex(
+      (p) => p.policyId === updatedPolicy.id
+    );
     if (index !== -1) {
       this.policies[index] = updatedPolicy;
     }
     this.closeModal();
   }
 
-  toggleSelection(policy: any) {
+  toggleSelection(policy: Policy) {
     const index = this.selectedPolicies.indexOf(policy);
     if (index === -1) {
       this.selectedPolicies.push(policy);
@@ -108,9 +136,31 @@ export class DashboardComponent {
     }
   }
 
-  deleteSelectedPolicies() {
-    this.policies = this.policies.filter((policy) => !this.selectedPolicies.includes(policy));
-    this.selectedPolicies = [];
+  deleteSelectedPolicies(): void {
+    const policyIds = this.selectedPolicies.map((policy) => policy.policyId);
+
+    if (policyIds.length === 0) {
+      alert("Please select at least one policy to delete.");
+      return;
+    }
+
+    const confirmationMessage =
+      policyIds.length === 1
+        ? "Are you sure you want to delete this policy?"
+        : `Are you sure you want to delete ${policyIds.length} policies?`;
+
+    if (confirm(confirmationMessage)) {
+      this.policyService.deletePolicies(policyIds).subscribe(
+        () => {
+          alert("Policy(ies) deleted successfully.");
+          this.loadPolicies(); 
+        },
+        (error) => {
+          console.error("Error deleting policy(ies):", error);
+          alert("Failed to delete policy(ies). Please try again.");
+        }
+      );
+    }
   }
 
   onSearch() {

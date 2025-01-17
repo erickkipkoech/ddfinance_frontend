@@ -1,54 +1,107 @@
-<div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-  <div class="bg-white rounded-lg w-1/3 p-6 shadow-lg">
-    <h2 class="text-lg font-semibold mb-4">Add New Policy</h2>
+<div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4">
+  <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-lg">
+    <!-- Dynamic Title -->
+    <h2 class="text-lg font-semibold mb-4">
+      {{ editMode ? 'Edit Policy' : 'Add New Policy' }}
+    </h2>
 
-    <form (ngSubmit)="submitPolicy()">
+    <form (ngSubmit)="savePolicy()">
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Policy Name</label>
         <input
           type="text"
-          [(ngModel)]="newPolicy.name"
+          [(ngModel)]="newPolicy.policyName"
           name="name"
-          class="border border-gray-300 rounded px-4 py-2 w-full"
+          class="border border-gray-300 rounded px-3 py-1.5 text-sm w-full"
+          placeholder="Enter policy name"
           required
         />
+        <p *ngIf="dbErrors['policyName']" class="text-red-500 text-sm mt-1">
+          {{ dbErrors["policyName"] }}
+        </p>
       </div>
 
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Premium</label>
         <input
           type="number"
-          [(ngModel)]="newPolicy.premium"
+          [(ngModel)]="newPolicy.premiumAmount"
           name="premium"
-          class="border border-gray-300 rounded px-4 py-2 w-full"
+          class="border border-gray-300 rounded px-3 py-1.5 text-sm w-full"
+          placeholder="Enter premium amount"
           required
         />
+        <p *ngIf="dbErrors['premiumAmount']" class="text-red-500 text-sm mt-1">
+          {{ dbErrors["premiumAmount"] }}
+        </p>
       </div>
 
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Coverage</label>
+        <label class="block text-sm font-medium text-gray-700">Policy Type</label>
         <input
           type="text"
-          [(ngModel)]="newPolicy.coverage"
-          name="coverage"
-          class="border border-gray-300 rounded px-4 py-2 w-full"
+          [(ngModel)]="newPolicy.policyType"
+          name="policyType"
+          class="border border-gray-300 rounded px-3 py-1.5 text-sm w-full"
+          placeholder="Enter policy type"
           required
         />
+        <p *ngIf="dbErrors['policyType']" class="text-red-500 text-sm mt-1">
+          {{ dbErrors["policyType"] }}
+        </p>
       </div>
 
-      <div class="flex justify-end space-x-2">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-small text-gray-700">Start Date</label>
+          <mat-form-field class="w-full" appearance="fill">
+            <input
+              type="datetime"
+              matInput
+              [matDatepicker]="startPicker"
+              [(ngModel)]="newPolicy.startDate"
+              name="startDate"
+              placeholder="Select start date"
+              required
+            />
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div>
+          <label class="block text-sm font-small text-gray-700">End Date</label>
+          <mat-form-field class="w-full" appearance="fill">
+            <input
+              type="datetime"
+              matInput
+              [matDatepicker]="endPicker"
+              [(ngModel)]="newPolicy.endDate"
+              name="endDate"
+              placeholder="Select end date"
+              required
+            />
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+          <p *ngIf="dbErrors['endDate']" class="text-red-500 text-sm mt-1">
+            {{ dbErrors["endDate"] }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-col-reverse sm:flex-row justify-end sm:space-x-2 mt-4">
         <button
           type="button"
-          class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          class="bg-gray-500 text-white px-3 py-1.5 rounded text-sm hover:bg-gray-600 w-full sm:w-auto"
           (click)="closeModal.emit()"
         >
           Cancel
         </button>
         <button
           type="submit"
-          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          class="bg-blue-500 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-600 w-full sm:w-auto"
         >
-          Add Policy
+          {{ editMode ? 'Update Policy' : 'Add Policy' }}
         </button>
       </div>
     </form>

@@ -51,7 +51,9 @@
             </th>
             <th class="px-4 py-3 border border-slate-300 dark:border-slate-700 text-sm font-medium">Policy Name</th>
             <th class="px-4 py-3 border border-slate-300 dark:border-slate-700 text-sm font-medium">Premium</th>
-            <th class="px-4 py-3 border border-slate-300 dark:border-slate-700 text-sm font-medium">Coverage</th>
+            <th class="px-4 py-3 border border-slate-300 dark:border-slate-700 text-sm font-medium">Policy Type</th>
+            <th class="px-4 py-3 border border-slate-300 dark:border-slate-700 text-sm font-medium">Start Date</th>
+            <th class="px-4 py-3 border border-slate-300 dark:border-slate-700 text-sm font-medium">End Date</th>
           </tr>
         </thead>
         <tbody>
@@ -59,9 +61,11 @@
             <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">
               <input type="checkbox" [checked]="selectedPolicies.includes(policy)" (change)="toggleSelection(policy)" />
             </td>
-            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.name }}</td>
-            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.premium }}</td>
-            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.coverage }}</td>
+            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.policyName  }}</td>
+            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.premiumAmount  }}</td>
+            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.policyType  }}</td>
+            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.startDate | date  }}</td>
+            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.endDate | date  }}</td>
           </tr>
         </tbody>
       </table>
