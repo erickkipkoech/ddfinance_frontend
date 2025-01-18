@@ -26,9 +26,9 @@ export class PolicyService {
   deletePolicy(policyId: number): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/${policyId}`);
   }
-  deletePolicies(ids: number[]) {
+  deletePolicies(policyIds: number[]) {
     const options = {
-      body: { ids }, 
+      body: { policyIds }, 
     };
     return this.http.delete(`${this.baseUrl}DeleteInsurancePolicies`, options);
   }

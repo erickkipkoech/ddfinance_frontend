@@ -48,7 +48,7 @@ export class AddpolicyComponent {
   ) { }
 
   dbErrors: { [key: string]: string } = {};
-  successMessage: string = "";
+  addSuccessMessage: string = "";
 
   ngOnInit() {
     if (this.editMode && this.policyToEdit) {
@@ -68,7 +68,7 @@ export class AddpolicyComponent {
       endDate: new Date(),
     };
     this.dbErrors = {};
-    this.successMessage = "";
+    this.addSuccessMessage = "";
   }
 
   savePolicy() {
@@ -78,7 +78,7 @@ export class AddpolicyComponent {
 
     saveObservable.subscribe({
       next: (response) => {
-        this.successMessage = this.editMode
+        this.addSuccessMessage = this.editMode
           ? "Policy updated successfully!"
           : "Policy added successfully!";
 
@@ -88,7 +88,7 @@ export class AddpolicyComponent {
             this.addPolicy.emit(response.data);    // Add new policy
           }
         setTimeout(() => {
-          this.successMessage = "";
+          this.addSuccessMessage = "";
           this.refresh.emit();
           this.closeModal.emit();
         }, 1000);
