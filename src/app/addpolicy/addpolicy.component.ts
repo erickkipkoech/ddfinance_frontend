@@ -26,8 +26,9 @@ export class AddpolicyComponent {
   @Input() editMode = false;
   @Input() policyToEdit: any = null;
   @Output() closeModal = new EventEmitter<void>();
-  @Output() addPolicy = new EventEmitter<any>();
+  @Output() addPolicy  = new EventEmitter<any>();
   @Output() updatePolicy = new EventEmitter<any>();
+
 
   @Input() policy: Policy | null = null;
   @Output() refresh = new EventEmitter<void>();
@@ -44,47 +45,66 @@ export class AddpolicyComponent {
   constructor(
     private policyService: PolicyService,
     private datePipe: DatePipe
-  ) {}
+  ) { }
 
   dbErrors: { [key: string]: string } = {};
-  
+  successMessage: string = "";
+
   ngOnInit() {
     if (this.editMode && this.policyToEdit) {
       this.newPolicy = { ...this.policyToEdit };
     } else {
-      // Reset the form for adding a new policy
-      this.newPolicy = {
-        policyId: 0,
-        policyName: "",
-        premiumAmount: 0,
-        policyType: "",
-        startDate: new Date(),
-        endDate: new Date(),
-      };
+      this.resetForm();
     }
   }
 
+  resetForm() {
+    this.newPolicy = {
+      policyId: 0,
+      policyName: "",
+      premiumAmount: 0,
+      policyType: "",
+      startDate: new Date(),
+      endDate: new Date(),
+    };
+    this.dbErrors = {};
+    this.successMessage = "";
+  }
+
   savePolicy() {
-    // Add or Update based on editMode
     const saveObservable = this.editMode
       ? this.policyService.updatePolicy(this.newPolicy)
       : this.policyService.addPolicy(this.newPolicy);
 
     saveObservable.subscribe({
-      next: () => {
-        this.refresh.emit();
-        this.closeModal.emit();
+      next: (response) => {
+        this.successMessage = this.editMode
+          ? "Policy updated successfully!"
+          : "Policy added successfully!";
+
+          if (this.editMode) {
+            this.updatePolicy.emit(response.data);  // Update existing policy
+          } else {
+            this.addPolicy.emit(response.data);    // Add new policy
+          }
+        setTimeout(() => {
+          this.successMessage = "";
+          this.refresh.emit();
+          this.closeModal.emit();
+        }, 1000);
+
       },
       error: (error) => {
-        if (error && error.error) {
-          this.dbErrors = error.error.reduce(
-            (acc: any, err: any) => ({ ...acc, [err.field]: err.message }),
-            {}
-          );
+        if (error && error.error.errors) {
+          this.dbErrors = Object.keys(error.error.errors).reduce((acc: { [key: string]: string }, key: string) => {
+            acc[key] = error.error.errors[key][0];
+            return acc;
+          }, {});
         }
       },
     });
   }
+
 
   close() {
     this.closeModal.emit();

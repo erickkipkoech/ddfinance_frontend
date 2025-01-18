@@ -27,16 +27,17 @@
       </div>
       <div>
         <button class="w-full px-4 py-2 sm:px-3 sm:py-1 bg-gray-600 text-white rounded-sm hover:bg-gray-700 md:w-auto"
-          (click)="toggleSearchModal()">
+          (click)="openSearchModal()">
           <fa-icon [icon]="faSearch"></fa-icon> Search
         </button>
 
         <div id="searchModal" class="fixed inset-0 bg-black/50 flex justify-center mt-8 transition-opacity duration-300"
           [class.opacity-100]="isSearchModalOpen" [class.pointer-events-none]="!isSearchModalOpen">
           <div class="bg-transparent p-6 rounded-lg shadow-lg w-11/12 sm:w-96 relative z-50">
-            <input type="text" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg"
-              placeholder="Search Policies..." (keydown)="handleKeyDown($event)" (focus)="isSearchModalOpen = true"
-              (blur)="isSearchModalOpen = false">
+            <input type="text" #searchInput
+              class="w-full bg-slate-900 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg"
+              placeholder="Search Policies..." (keydown)="handleKeyDown($event)" (blur)="closeSearchModal()"
+              [(ngModel)]="searchQuery" (ngModelChange)="onSearch()">
           </div>
         </div>
       </div>
@@ -45,7 +46,7 @@
     <div class="overflow-x-auto">
       <table class="table-auto w-full text-sm border-collapse border border-slate-300 dark:border-slate-700">
         <thead>
-          <tr class="bg-gray-200 dark:bg-gray-800 text-slate-900 text-left">
+          <tr class="bg-gray-200 dark:bg-gray-800 dark:text-slate-200 text-slate-800 text-left">
             <th class="px-4 py-3 border border-slate-300 dark:border-slate-700 text-sm font-medium">
               <input type="checkbox" (change)="selectAll($event)" />
             </th>
@@ -57,22 +58,24 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let policy of paginatedPolicies" class="hover:bg-gray-100 hover:text-slate-900 dark:hover:bg-gray-700 cursor-pointer">
+          <tr *ngFor="let policy of paginatedPolicies"
+            class="hover:bg-gray-100 hover:text-slate-900 dark:hover:bg-gray-100 cursor-pointer">
             <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">
               <input type="checkbox" [checked]="selectedPolicies.includes(policy)" (change)="toggleSelection(policy)" />
             </td>
-            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.policyName  }}</td>
-            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.premiumAmount  }}</td>
-            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.policyType  }}</td>
-            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.startDate | date  }}</td>
-            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.endDate | date  }}</td>
+            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.policyName }}</td>
+            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.premiumAmount }}</td>
+            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.policyType }}</td>
+            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.startDate | date }}</td>
+            <td class="px-4 py-3 border border-slate-300 dark:border-slate-700">{{ policy.endDate | date }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div class="flex flex-wrap justify-between items-center mt-4 gap-2">
-      <button (click)="goToPreviousPage()" class="p-2 bg-gray-600 text-white rounded flex items-center justify-center"
+      <button (click)="goToPreviousPage()"
+        class="p-2 bg-gray-600 text-white rounded hover:bg-gray-400 flex items-center justify-center"
         [disabled]="currentPage === 1">
         <fa-icon [icon]="faBackward" class="text-xl"></fa-icon>
         <span class="hidden sm:inline ml-2">Previous</span>
@@ -80,7 +83,8 @@
       <span class="text-sm text-gray-700 dark:text-gray-300 w-full text-center md:w-auto">
         Page {{ currentPage }} of {{ totalPages }}
       </span>
-      <button (click)="goToNextPage()" class="p-2 bg-gray-600 text-white rounded flex items-center justify-center"
+      <button (click)="goToNextPage()"
+        class="p-2 bg-gray-600 text-white rounded hover:bg-gray-400 flex items-center justify-center"
         [disabled]="currentPage === totalPages">
         <span class="hidden sm:inline mr-2">Next</span>
         <fa-icon [icon]="faForward" class="text-xl"></fa-icon>
@@ -89,6 +93,11 @@
   </div>
 </div>
 
-<app-addpolicy *ngIf="isModalOpen" [editMode]="isEditMode" [policyToEdit]="policyToEdit" (closeModal)="closeModal()"
-  (addPolicy)="addPolicy($event)" (updatePolicy)="updatePolicy($event)">
+<app-addpolicy 
+  *ngIf="isModalOpen" 
+  [editMode]="isEditMode" 
+  [policyToEdit]="policyToEdit" 
+  (closeModal)="closeModal()"
+  (addPolicy)="addPolicy($event)" 
+  (updatePolicy)="updatePolicy($event)">
 </app-addpolicy>
