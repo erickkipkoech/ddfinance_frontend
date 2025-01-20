@@ -1,4 +1,12 @@
-<div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4">
+<div
+  *ngIf="addSuccessMessage"
+  class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4 fixed top-4 left-1/2 transform -translate-x-1/2 z-50 shadow-lg"
+  role="alert"
+>
+  {{ addSuccessMessage }}
+</div>
+
+<div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
   <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-lg">
     <!-- Dynamic Title -->
     <h2 class="text-lg font-semibold mb-4">
@@ -16,8 +24,8 @@
           placeholder="Enter policy name"
           required
         />
-        <p *ngIf="dbErrors['policyName']" class="text-red-500 text-sm mt-1">
-          {{ dbErrors["policyName"] }}
+        <p *ngIf="dbErrors['PolicyName']" class="text-red-500 text-sm">
+          {{ dbErrors["PolicyName"] }}
         </p>
       </div>
 
@@ -31,8 +39,8 @@
           placeholder="Enter premium amount"
           required
         />
-        <p *ngIf="dbErrors['premiumAmount']" class="text-red-500 text-sm mt-1">
-          {{ dbErrors["premiumAmount"] }}
+        <p *ngIf="dbErrors['PremiumAmount']" class="text-red-500 text-sm">
+          {{ dbErrors["PremiumAmount"] }}
         </p>
       </div>
 
@@ -46,8 +54,8 @@
           placeholder="Enter policy type"
           required
         />
-        <p *ngIf="dbErrors['policyType']" class="text-red-500 text-sm mt-1">
-          {{ dbErrors["policyType"] }}
+        <p *ngIf="dbErrors['PolicyType']" class="text-red-500 text-sm">
+          {{ dbErrors["PolicyType"] }}
         </p>
       </div>
 
@@ -67,6 +75,9 @@
             <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
             <mat-datepicker #startPicker></mat-datepicker>
           </mat-form-field>
+          <p *ngIf="dbErrors['StartDate']" class="text-red-500 text-sm mt-1">
+            {{ dbErrors['StartDate'] }}
+          </p>
         </div>
         <div>
           <label class="block text-sm font-small text-gray-700">End Date</label>
@@ -83,8 +94,8 @@
             <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
             <mat-datepicker #endPicker></mat-datepicker>
           </mat-form-field>
-          <p *ngIf="dbErrors['endDate']" class="text-red-500 text-sm mt-1">
-            {{ dbErrors["endDate"] }}
+          <p *ngIf="dbErrors['EndDate']" class="text-red-500 text-sm">
+            {{ dbErrors["EndDate"] }}
           </p>
         </div>
       </div>

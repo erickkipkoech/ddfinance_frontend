@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { AddpolicyComponent } from "../addpolicy/addpolicy.component";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
@@ -24,12 +24,10 @@ import { Policy } from "../models/policy.model";
 })
 export class DashboardComponent implements OnInit {
   policies: Policy[] = [];
+  filteredPolicies: Policy[] = [];
   searchQuery: string = "";
   showModal: boolean = false;
-  selectedPolicy: Policy | null = null;
-  selectedPolicyIds: number[] = [];
 
-  isSearchBarVisible = false;
   isModalOpen = false;
   isSearchModalOpen = false;
   isEditMode = false;
@@ -47,11 +45,16 @@ export class DashboardComponent implements OnInit {
   faForward = faForward;
   faBackward = faBackward;
   faTimes = faTimes;
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private policyService: PolicyService) {}
+
+  constructor(private policyService: PolicyService) { }
+  successMessage: string = "";
+  errorMessage: string = "";
 
   ngOnInit() {
     this.loadPolicies();
+    this.filteredPolicies = [...this.policies];
   }
 
   loadPolicies() {
@@ -59,33 +62,42 @@ export class DashboardComponent implements OnInit {
       if (response.success) {
         this.policies = response.data || [];
       }
-    });
+    },
+      (error) => {
+        this.errorMessage = "Failed to load policies. Please try again.";
+        setTimeout(() => {
+          this.errorMessage = "";
+        }, 2000);
+
+      });
   }
 
-  // policies = [
-
-  // ];
-
-  toggleSearchModal() {
-    this.isSearchModalOpen = !this.isSearchModalOpen;
-    this.isDashboardBlurred = this.isSearchModalOpen;
-  }
-
-  closeSearchModal() {
-    this.isSearchModalOpen = false;
-    this.isDashboardBlurred = false;
-  }
-
-  handleKeyDown(event: KeyboardEvent) {
-    if (event.key === "Enter" && this.isSearchModalOpen) {
-      this.closeSearchModal();
+  addPolicy(data: any) {
+    if (data) {
+      this.policies.push(data);
+      this.filteredPolicies = [...this.policies];
     }
   }
+
+  updatePolicy(data: any) {
+    if (data && data.policyId) {
+      const index = this.policies.findIndex(policy => policy.policyId === data.policyId);
+      if (index !== -1) {
+        this.policies[index] = { ...this.policies[index], ...data };
+        this.filteredPolicies = [...this.policies];
+        this.selectedPolicies = [];
+      }
+    }
+  }
+
 
   openModal(mode: "add" | "edit") {
     if (mode === "edit") {
       if (this.selectedPolicies.length !== 1) {
-        alert("Please select exactly one policy to edit.");
+        this.errorMessage = "Please select exactly one policy to edit.";
+        setTimeout(() => {
+          this.errorMessage = "";
+        }, 2000);
         return;
       }
       this.policyToEdit = { ...this.selectedPolicies[0] };
@@ -97,26 +109,9 @@ export class DashboardComponent implements OnInit {
   }
 
   closeModal() {
+    //this.loadPolicies();
     this.isModalOpen = false;
-  }
-
-  addPolicy(newPolicy: any) {
-    const newId = this.policies.length
-      ? Math.max(...this.policies.map((p) => p.policyId)) + 1
-      : 1;
-    this.policies.push({ id: newId, ...newPolicy });
     
-    this.closeModal();
-  }
-
-  updatePolicy(updatedPolicy: any) {
-    const index = this.policies.findIndex(
-      (p) => p.policyId === updatedPolicy.id
-    );
-    if (index !== -1) {
-      this.policies[index] = updatedPolicy;
-    }
-    this.closeModal();
   }
 
   toggleSelection(policy: Policy) {
@@ -140,7 +135,10 @@ export class DashboardComponent implements OnInit {
     const policyIds = this.selectedPolicies.map((policy) => policy.policyId);
 
     if (policyIds.length === 0) {
-      alert("Please select at least one policy to delete.");
+      this.errorMessage = "Please select at least one policy to delete.";
+      setTimeout(() => {
+        this.errorMessage = "";
+      }, 1000);
       return;
     }
 
@@ -152,35 +150,61 @@ export class DashboardComponent implements OnInit {
     if (confirm(confirmationMessage)) {
       this.policyService.deletePolicies(policyIds).subscribe(
         () => {
-          alert("Policy(ies) deleted successfully.");
-          this.loadPolicies(); 
+          this.policies = this.policies.filter(
+            (policy) => !policyIds.includes(policy.policyId)
+          );
+
+          this.selectedPolicies = this.selectedPolicies.filter(
+            (policy) => !policyIds.includes(policy.policyId)
+          );
+
+          this.filteredPolicies = [...this.policies];
+
+          this.successMessage = "Policy(ies) deleted successfully.";
+
+          setTimeout(() => {
+            this.successMessage = "";
+          }, 1000);
+
         },
         (error) => {
-          console.error("Error deleting policy(ies):", error);
-          alert("Failed to delete policy(ies). Please try again.");
+          this.errorMessage = "Failed to delete policy(ies). Please try again.";
+          setTimeout(() => {
+            this.errorMessage = "";
+          }, 1000);
         }
       );
     }
   }
 
   onSearch() {
+    this.filteredPolicies = this.policies.filter((policy) =>
+      policy.policyName.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
     this.currentPage = 1;
-    this.closeSearchBar();
   }
 
-  toggleSearchBar() {
-    this.isSearchBarVisible = !this.isSearchBarVisible;
-  }
-
-  closeSearchBar() {
+  openSearchModal() {
+    this.isSearchModalOpen = true;
     setTimeout(() => {
-      this.isSearchBarVisible = false;
-    }, 100);
+      this.searchInput.nativeElement.focus(); // Focus the input
+    }, 2);
+  }
+
+  closeSearchModal() {
+    this.isSearchModalOpen = false;
+    this.filteredPolicies;
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key === "Enter" && this.isSearchModalOpen) {
+      this.closeSearchModal();
+    }
   }
 
   get paginatedPolicies() {
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.policies.slice(startIndex, startIndex + this.pageSize);
+    return this.filteredPolicies.slice(startIndex, startIndex + this.pageSize);
   }
 
   get totalPages() {
